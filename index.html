@@ -1,14 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Finder - Professional Intelligence Directory</title>
+  <title>AURA AI // Execution Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <script type="importmap">
 {
@@ -25,76 +24,121 @@
 }
 </script>
 
-  <!-- Load Babel with explicit presets to avoid esmodules target error -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    :root { 
-      --bg-dark: #020203; 
-      --accent-pink: #ff2d55; 
+    :root {
+      --bg-black: #000000;
+      --accent-pink: #ff2d55;
       --accent-purple: #a855f7;
     }
-    body { 
-      font-family: 'Inter', sans-serif; 
-      background-color: var(--bg-dark); 
-      color: #f8fafc; 
-      overflow-x: hidden; 
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-black);
+      color: #ffffff;
       margin: 0;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    .tech-font { font-family: 'JetBrains Mono', monospace; }
-    .glass { 
-      background: rgba(10, 10, 12, 0.7); 
-      backdrop-filter: blur(24px); 
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.05); 
-    }
-    .glass-hover:hover {
-      background: rgba(15, 15, 18, 0.8);
-      border-color: rgba(255, 45, 85, 0.2);
-    }
-    .neon-pink-text { 
-      color: #ff2d55; 
-      text-shadow: 0 0 15px rgba(255, 45, 85, 0.4); 
-    }
-    .neon-pink-border {
-      border: 1px solid rgba(255, 45, 85, 0.3);
-      box-shadow: 0 0 15px rgba(255, 45, 85, 0.1);
-    }
-    .orb { 
-      position: absolute; 
-      border-radius: 50%; 
-      filter: blur(120px); 
-      z-index: -1; 
-      pointer-events: none; 
-      opacity: 0.15; 
-    }
-    .orb-pink { background: #ff2d55; width: 400px; height: 400px; }
-    .orb-purple { background: #a855f7; width: 500px; height: 500px; }
-    .orb-blue { background: #3b82f6; width: 450px; height: 450px; }
-    
-    .animate-float { animation: float 20s ease-in-out infinite; }
-    @keyframes float { 
-      0%, 100% { transform: translate(0, 0); } 
-      50% { transform: translate(30px, -30px) scale(1.05); } 
+    .mono-font {
+      font-family: 'JetBrains Mono', monospace;
     }
     
-    .gradient-text {
-      background: linear-gradient(135deg, #fff 0%, #a855f7 50%, #ff2d55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* Premium Shimmer and Glow */
+    .neon-pink-text {
+      color: var(--accent-pink);
+      text-shadow: 0 0 40px rgba(255, 45, 85, 0.7);
+      transition: text-shadow 0.3s ease;
+    }
+    .neon-pink-text:hover {
+      text-shadow: 0 0 60px rgba(255, 45, 85, 1);
     }
 
-    input:focus { box-shadow: 0 0 0 2px rgba(255, 45, 85, 0.2); }
+    .shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* Staggered Reveal Animations */
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
     
-    /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020203; }
-    ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #333; }
+    .animate-reveal {
+      animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+    .delay-5 { animation-delay: 1s; }
+
+    /* Grid background with depth */
+    .grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    /* Glass Cards */
+    .glass-premium {
+      background: rgba(10, 10, 12, 0.6);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .hover-card:hover {
+      border-color: rgba(255, 45, 85, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 0 40px rgba(255, 45, 85, 0.1);
+    }
+
+    input::placeholder {
+      color: #222;
+      font-weight: 500;
+    }
+
+    /* Custom Selection */
+    ::selection {
+      background: rgba(255, 45, 85, 0.3);
+      color: white;
+    }
+
+    /* Pulsating dots */
+    .pulse-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-pink);
+      box-shadow: 0 0 10px var(--accent-pink);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(2.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 0; }
+    }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root" class="grid-bg min-h-screen"></div>
   <script type="module" src="index.tsx"></script>
 </body>
 </html>

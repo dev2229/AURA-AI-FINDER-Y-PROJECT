@@ -8,13 +8,14 @@ export async function findToolsForTask(query: string): Promise<AITool[]> {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Identify exactly 20 of the most reputable and reliable AI tools relevant to the request: "${query}". 
+      contents: `Perform a deep index search for exactly 20 currently active, high-utility AI tools for the user query: "${query}".
+      
       Requirements:
-      1. Use only currently operational, real-world tools.
-      2. Provide realistic user ratings (1.0 to 5.0).
-      3. Provide a realistic review count estimate (e.g. 10k+, 500+).
-      4. Ensure a mix of pricing models: Free, Freemium, or Paid.
-      5. Rank them by quality and utility for the specific task.`,
+      1. Prioritize tools launched or significantly updated in 2024-2025.
+      2. Categorize accurately: LLM, Audio, Video, Design, Productivity, Dev, etc.
+      3. Provide professional ratings (1.0 - 5.0) and review count estimations.
+      4. Ensure URLs are real and direct (no generic search engine results).
+      5. Include a diversity of pricing models: Free, Freemium, Paid.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -26,10 +27,10 @@ export async function findToolsForTask(query: string): Promise<AITool[]> {
               description: { type: Type.STRING },
               pricing_model: { 
                 type: Type.STRING, 
-                description: "Must be one of: Free, Freemium, Paid"
+                description: "Must be exactly 'Free', 'Freemium', or 'Paid'"
               },
               rating: { type: Type.NUMBER },
-              review_count: { type: Type.STRING, description: "Popularity, e.g., '12k+', '850+'" },
+              review_count: { type: Type.STRING },
               url: { type: Type.STRING },
               category: { type: Type.STRING },
               tags: { 
@@ -40,43 +41,60 @@ export async function findToolsForTask(query: string): Promise<AITool[]> {
             required: ["name", "description", "pricing_model", "rating", "review_count", "url", "category"],
           }
         },
-        systemInstruction: "You are the lead intelligence analyst for AI Finder. You must provide a high-quality list of real AI tools. Never hallucinate names or URLs. Ensure rating and review counts reflect general consensus."
+        systemInstruction: "You are the primary intelligence architect for AI Finder. You specialize in accurate, up-to-date identification of AI tools. You do not hallucinate products. You only return real, production-ready software."
       },
     });
 
     const results = JSON.parse(response.text || "[]");
     
-    return results.map((tool: any, index: number) => ({
-      ...tool,
-      id: `tool-${index}-${Date.now()}`,
-    }));
+    // Map string response to our PricingModel enum and add unique IDs
+    return results.map((tool: any, index: number) => {
+      let model = PricingModel.FREEMIUM;
+      if (tool.pricing_model?.toLowerCase() === 'free') model = PricingModel.FREE;
+      if (tool.pricing_model?.toLowerCase() === 'paid') model = PricingModel.PAID;
+
+      return {
+        ...tool,
+        id: `node-${index}-${Date.now()}`,
+        pricing_model: model
+      };
+    });
   } catch (error) {
-    console.error("Error finding tools:", error);
-    // Return fallback tools in case of error
+    console.error("Discovery Engine Error:", error);
+    // Return high-quality fallback tools
     return [
       {
-        id: "fallback-1",
-        name: "ChatGPT",
-        description: "The industry standard for conversational AI and writing.",
-        // Fix: Using PricingModel enum instead of string literal to match type definition
+        id: "fb-1",
+        name: "ChatGPT Plus",
+        description: "The world's most versatile LLM with advanced data analysis and image generation.",
         pricing_model: PricingModel.FREEMIUM,
         rating: 4.9,
-        review_count: "1M+",
+        review_count: "2.4M+",
         url: "https://chat.openai.com",
-        category: "Writing",
-        tags: ["LLM", "Chat"]
+        category: "LLM",
+        tags: ["GPT-4o", "Multi-modal"]
       },
       {
-        id: "fallback-2",
-        name: "Claude",
-        description: "Highly capable AI known for advanced reasoning and coding skills.",
-        // Fix: Using PricingModel enum instead of string literal to match type definition
+        id: "fb-2",
+        name: "Claude 3.5 Sonnet",
+        description: "Leading model for reasoning, coding assistance, and human-like writing.",
         pricing_model: PricingModel.FREEMIUM,
         rating: 4.8,
-        review_count: "500k+",
+        review_count: "800k+",
         url: "https://claude.ai",
         category: "Reasoning",
-        tags: ["LLM", "Coding"]
+        tags: ["Coding", "Artifacts"]
+      },
+      {
+        id: "fb-3",
+        name: "Perplexity AI",
+        description: "An AI-powered search engine that provides cited answers to complex questions.",
+        pricing_model: PricingModel.FREE,
+        rating: 4.7,
+        review_count: "500k+",
+        url: "https://perplexity.ai",
+        category: "Search",
+        tags: ["Research", "Citations"]
       }
     ];
   }

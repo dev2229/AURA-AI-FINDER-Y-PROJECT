@@ -17,8 +17,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Mock user for demo mode
 const MOCK_USER: any = {
   id: 'demo-user-123',
-  email: 'demo@aura-ai.network',
-  user_metadata: { full_name: 'Demo Architect' }
+  email: 'guest@aifinder.io',
+  user_metadata: { full_name: 'Guest User' }
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -29,8 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isConfigured = !!(process.env as any).SUPABASE_URL || true;
 
   useEffect(() => {
-    // Check for demo session in local storage
-    const isDemo = localStorage.getItem('aura_demo_mode') === 'true';
+    const isDemo = localStorage.getItem('ai_finder_demo_mode') === 'true';
     if (isDemo) {
       setUser(MOCK_USER);
       setLoading(false);
@@ -52,8 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      // Don't override demo mode if it's active
-      if (localStorage.getItem('aura_demo_mode') === 'true') return;
+      if (localStorage.getItem('ai_finder_demo_mode') === 'true') return;
       
       setSession(session);
       setUser(session?.user ?? null);
@@ -64,12 +62,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const loginAsDemo = () => {
-    localStorage.setItem('aura_demo_mode', 'true');
+    localStorage.setItem('ai_finder_demo_mode', 'true');
     setUser(MOCK_USER);
   };
 
   const signOut = async () => {
-    localStorage.removeItem('aura_demo_mode');
+    localStorage.removeItem('ai_finder_demo_mode');
     try {
       await supabase.auth.signOut();
     } catch (error) {

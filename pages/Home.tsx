@@ -1,200 +1,154 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RECENT_SEARCHES_KEY = 'aura_ai_recent_searches';
-
-const SUGGESTIONS = [
-  'Landing page', 'Vibe coding', 'Image to video', 'Text to image',
-  'AI Resume', 'Website code', 'Logo maker', 'SEO AI',
-  'YouTube script', 'Voiceovers'
+const SEARCH_IDEAS = [
+  { label: 'Logo Systems', query: 'Best AI logo generators 2025' },
+  { label: 'Video Production', query: 'AI video generation tools' },
+  { label: 'Logic & Code', query: 'AI for professional software engineering' },
+  { label: 'Voice Over', query: 'AI realistic text to speech' }
 ];
 
-const TRENDING_TOOLS = [
-  { name: 'ChatGPT', price: 'Freemium' },
-  { name: 'Claude', price: 'Freemium' },
-  { name: 'Midjourney', price: 'Paid' },
-  { name: 'Perplexity', price: 'Free' },
-  { name: 'Canva AI', price: 'Freemium' },
-  { name: 'Luma Dream Machine', price: 'Freemium' },
-  { name: 'ElevenLabs', price: 'Freemium' },
-  { name: 'Cursor', price: 'Freemium' },
-  { name: 'Grammarly', price: 'Freemium' },
-  { name: 'Notion AI', price: 'Paid' },
-  { name: 'Jasper', price: 'Paid' },
-  { name: 'Leonardo.ai', price: 'Freemium' },
-  { name: 'Runway Gen-3', price: 'Paid' },
-  { name: 'GitHub Copilot', price: 'Paid' },
-  { name: 'DeepL', price: 'Free' },
-  { name: 'Gamma', price: 'Freemium' },
-  { name: 'Framer AI', price: 'Freemium' },
-  { name: 'Poe', price: 'Freemium' },
-  { name: 'Otter.ai', price: 'Freemium' },
-  { name: 'Descript', price: 'Freemium' }
-];
-
-const POPULAR_TAGS = [
-  'LLM', 'GenArt', 'Voice', 'Code', 'Scraping', 'SEO', 'No-code', 'Agents', 'B2B'
-];
-
-const DYNAMIC_PLACEHOLDERS = [
-  'website code...', 'landing page...', 'neural logic...', 'creative assets...'
+const TRENDING_AI = [
+  { id: '1', name: 'ChatGPT', pricing: 'Free', category: 'General', icon: 'C', rating: 4.9, desc: 'Advanced conversational agent for all workflows.' },
+  { id: '2', name: 'Claude 3.5', pricing: 'Freemium', category: 'Reasoning', icon: 'C', rating: 4.8, desc: 'Highest intelligence for coding and logic.' },
+  { id: '3', name: 'Midjourney', pricing: 'Paid', category: 'Art', icon: 'M', rating: 4.7, desc: 'Professional generative aesthetics.' },
+  { id: '4', name: 'Runway Gen-3', pricing: 'Paid', category: 'Video', icon: 'R', rating: 4.6, desc: 'Next-gen motion and video synthesis.' }
 ];
 
 const Home: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const saved = localStorage.getItem(RECENT_SEARCHES_KEY);
-    if (saved) {
-      try {
-        setRecentSearches(JSON.parse(saved));
-      } catch (e) {
-        setRecentSearches([]);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % DYNAMIC_PLACEHOLDERS.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const saveSearch = (searchTerm: string) => {
-    const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
-    setRecentSearches(updated);
-    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      saveSearch(query.trim());
-      navigate(`/results?q=${encodeURIComponent(query)}`);
+      navigate(`/results?q=${encodeURIComponent(query.trim())}`);
     }
   };
 
-  const handleSuggestion = (suggestion: string) => {
-    saveSearch(suggestion);
-    navigate(`/results?q=${encodeURIComponent(suggestion)}`);
+  const handleQuickSearch = (q: string) => {
+    navigate(`/results?q=${encodeURIComponent(q)}`);
   };
 
   return (
-    <div className="relative min-h-[90vh] flex flex-col items-center justify-center px-4 overflow-hidden py-12 md:py-20">
-      <div className="orb orb-purple -top-40 -left-40 opacity-40"></div>
-      <div className="orb orb-pink top-[20%] right-[10%] opacity-30"></div>
-      <div className="orb orb-blue bottom-[-10%] left-[20%] opacity-20"></div>
+    <div className="relative min-h-screen flex flex-col items-center pt-16 pb-40 px-6">
+      {/* Dynamic Background */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10">
+        <div className="absolute top-[5%] left-[10%] w-[800px] h-[800px] bg-[#ff2d55] rounded-full blur-[250px] opacity-[0.03]"></div>
+        <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-[#a855f7] rounded-full blur-[250px] opacity-[0.03]"></div>
+      </div>
 
-      <div className="max-w-6xl w-full mx-auto space-y-12 md:space-y-16 relative z-10 text-center">
-        <div className="space-y-4 md:space-y-6">
-          <div className="inline-block tech-font text-[9px] md:text-[10px] tracking-[0.3em] md:tracking-[0.5em] uppercase text-[#ff2d55] border border-[#ff2d55]/30 px-4 md:px-5 py-2 rounded-full bg-[#ff2d55]/5 mb-2 animate-pulse neon-pink-border font-black">
-            Neural Network // V3.2
-          </div>
-          <h1 className="text-4xl sm:text-6xl md:text-[6rem] font-black tracking-tighter leading-[1.1] md:leading-[0.9] mb-4 px-2">
-            Execute Your <span className="neon-pink-text">Vision</span> <br />
-            <span className="gradient-text">With AI Intelligence</span>
+      <div className="max-w-6xl w-full flex flex-col items-center">
+        
+        {/* Version Badge */}
+        <div className="animate-reveal opacity-0 inline-flex items-center px-6 py-2.5 rounded-full border border-[#ff2d55]/20 bg-[#ff2d55]/5 mb-14 backdrop-blur-xl">
+          <div className="pulse-dot mr-3"></div>
+          <span className="mono-font text-[10px] tracking-[0.6em] font-bold text-[#ff2d55]">
+            NEURAL NETWORK // V3.2
+          </span>
+        </div>
+
+        {/* Hero Section */}
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="animate-reveal delay-1 opacity-0 text-6xl md:text-[110px] font-black tracking-tighter leading-[0.85] text-white">
+            Execute Your <span className="neon-pink-text">Vision</span>
           </h1>
-          <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto font-light leading-relaxed px-4">
-            Access the professional data layer for <span className="neon-pink-text font-medium">AI discovery</span>. 
-            Identify specialized categories and integrate them into your workflow.
-          </p>
+          <h1 className="animate-reveal delay-2 opacity-0 text-6xl md:text-[110px] font-black tracking-tighter leading-[0.85] text-white">
+            <span className="text-[#a855f7]">W</span>ith AI Intelligence
+          </h1>
         </div>
 
-        <div className="w-full max-w-4xl mx-auto px-2">
-          <form onSubmit={handleSearch} className="relative group mb-8 md:mb-12">
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#ff2d55] via-[#a855f7] to-[#3b82f6] rounded-[22px] blur-sm md:blur-md opacity-20 group-hover:opacity-50 transition duration-700"></div>
-            <div className="relative flex flex-col sm:flex-row items-center gap-3">
-              <input 
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={`Search ${DYNAMIC_PLACEHOLDERS[placeholderIndex]}`}
-                className="w-full bg-black/95 border border-white/10 text-white px-6 md:px-10 py-5 md:py-7 rounded-2xl md:rounded-3xl text-lg md:text-xl font-light placeholder:text-gray-700 outline-none focus:border-[#ff2d55]/50 transition-all shadow-xl"
-              />
-              <button 
-                type="submit"
-                className="w-full sm:w-auto sm:absolute sm:right-4 bg-[#ff2d55] text-white px-10 py-5 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] hover:brightness-125 transition-all shadow-lg sm:shadow-[0_0_20px_rgba(255,45,85,0.4)]"
-              >
-                Execute
-              </button>
-            </div>
-          </form>
+        {/* Hero Subtext */}
+        <p className="animate-reveal delay-3 opacity-0 text-gray-500 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed mb-16 text-center">
+          Access the professional data layer for <span className="text-[#ff2d55] font-bold">AI discovery</span>. Identify specialized categories and integrate them into your workflow.
+        </p>
+
+        {/* Main Search Interface */}
+        <div className="animate-reveal delay-4 opacity-0 w-full max-w-4xl mb-12 relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-[#ff2d55] to-[#a855f7] rounded-[36px] blur-2xl opacity-[0.08] group-focus-within:opacity-30 transition-all duration-1000"></div>
           
-          <div className="mt-8 md:mt-12 px-2">
-            <div className="flex items-center justify-center space-x-3 md:space-x-4 mb-6 md:mb-8">
-               <div className="h-[1px] w-8 md:w-12 bg-[#ff2d55]/30"></div>
-               <span className="tech-font text-[9px] md:text-[10px] text-[#ff2d55] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black neon-pink-text">Neural Entry Points</span>
-               <div className="h-[1px] w-8 md:w-12 bg-[#ff2d55]/30"></div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
-              {SUGGESTIONS.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => handleSuggestion(item)}
-                  className="px-3 py-2.5 border border-white/5 rounded-lg md:rounded-xl tech-font text-[8px] md:text-[9px] uppercase tracking-widest text-gray-500 hover:text-white hover:border-[#ff2d55]/50 hover:bg-[#ff2d55]/10 transition-all font-bold"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+          <form onSubmit={handleSearch} className="relative flex items-center bg-[#070707] border border-white/5 p-3 rounded-[32px] shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <input 
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search creative assets..."
+              className="w-full bg-transparent text-white px-8 py-7 text-2xl font-light outline-none placeholder:text-gray-800"
+            />
+            <button 
+              type="submit"
+              className="bg-[#ff2d55] text-white px-12 py-6 rounded-[24px] font-black uppercase text-[12px] tracking-[0.3em] hover:bg-[#ff4065] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_40px_rgba(255,45,85,0.25)]"
+            >
+              Execute
+            </button>
+          </form>
+        </div>
+
+        {/* Quick Suggestion Entry Points */}
+        <div className="animate-reveal delay-5 opacity-0 flex flex-wrap justify-center items-center gap-4 mb-32">
+          <span className="mono-font text-[10px] uppercase tracking-widest text-gray-700 font-bold mr-2">Query Ideas:</span>
+          {SEARCH_IDEAS.map((idea) => (
+            <button
+              key={idea.label}
+              onClick={() => handleQuickSearch(idea.query)}
+              className="px-6 py-3 rounded-xl border border-white/5 bg-white/[0.01] text-gray-600 text-[11px] font-bold hover:text-white hover:border-[#ff2d55]/20 hover:bg-[#ff2d55]/5 transition-all duration-300"
+            >
+              {idea.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Trending Section (Free to Paid) */}
+        <div className="animate-reveal delay-5 opacity-0 w-full max-w-6xl flex flex-col items-center border-t border-white/5 pt-32">
+          <div className="text-center mb-16">
+            <div className="mono-font text-[10px] text-[#ff2d55] uppercase tracking-[0.5em] mb-4 font-black">Market Analysis</div>
+            <h2 className="text-4xl font-black text-white tracking-tighter">Top Trending Nodes</h2>
           </div>
 
-          {/* Trending Now Section */}
-          <div className="mt-16 md:mt-24 px-2">
-            <div className="flex items-center justify-center space-x-3 md:space-x-4 mb-8 md:mb-10">
-               <div className="h-[1px] w-10 md:w-20 bg-gradient-to-r from-transparent to-[#ff2d55]/30"></div>
-               <span className="tech-font text-[10px] md:text-[12px] text-white uppercase tracking-[0.5em] font-black">Trending Now</span>
-               <div className="h-[1px] w-10 md:w-20 bg-gradient-to-l from-transparent to-[#ff2d55]/30"></div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {TRENDING_TOOLS.map((tool) => (
-                <button
-                  key={tool.name}
-                  onClick={() => handleSuggestion(tool.name)}
-                  className="glass group p-5 rounded-[20px] border border-white/5 hover:border-[#ff2d55]/30 transition-all duration-500 text-left relative overflow-hidden flex flex-col justify-between"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-white font-bold text-sm tracking-tight group-hover:text-[#ff2d55] transition-colors">{tool.name}</span>
-                    <span className={`text-[7px] tech-font uppercase tracking-widest px-2 py-0.5 rounded border ${
-                      tool.price === 'Free' ? 'text-emerald-400 border-emerald-400/20 bg-emerald-400/5' :
-                      tool.price === 'Freemium' ? 'text-[#ff2d55] border-[#ff2d55]/20 bg-[#ff2d55]/5' :
-                      'text-blue-400 border-blue-400/20 bg-blue-400/5'
-                    }`}>
-                      {tool.price}
-                    </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            {TRENDING_AI.map((tool) => (
+              <div 
+                key={tool.id}
+                onClick={() => handleQuickSearch(tool.name)}
+                className="glass-premium hover-card p-8 rounded-[40px] flex flex-col text-left transition-all duration-500 cursor-pointer group border border-white/5 bg-white/[0.02]"
+              >
+                <div className="flex justify-between items-start mb-10">
+                  <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white font-black text-2xl group-hover:bg-[#ff2d55] transition-all">
+                    {tool.icon}
                   </div>
-                  <div className="tech-font text-[8px] text-gray-600 uppercase tracking-widest group-hover:text-gray-400">Execute Protocol →</div>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#ff2d55]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12 md:mt-16 px-2">
-            <div className="flex items-center justify-center space-x-3 md:space-x-4 mb-6 md:mb-8">
-               <div className="h-[1px] w-8 md:w-12 bg-white/10"></div>
-               <span className="tech-font text-[9px] md:text-[10px] text-gray-500 uppercase tracking-[0.3em] md:tracking-[0.4em] font-black">Popular Tags</span>
-               <div className="h-[1px] w-8 md:w-12 bg-white/10"></div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-2">
-              {POPULAR_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleSuggestion(tag)}
-                  className="px-3 py-1.5 bg-white/5 border border-white/5 rounded-full tech-font text-[7px] md:text-[8px] uppercase tracking-widest text-gray-500 hover:text-[#ff2d55] hover:border-[#ff2d55]/30 transition-all font-bold"
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
+                  <div className="flex flex-col items-end">
+                    <span className={`mono-font text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border mb-2 ${
+                      tool.pricing === 'Free' ? 'text-emerald-500 border-emerald-500/20 bg-emerald-500/5' : 
+                      tool.pricing === 'Freemium' ? 'text-orange-400 border-orange-400/20 bg-orange-400/5' : 
+                      'text-[#a855f7] border-[#a855f7]/20 bg-[#a855f7]/5'
+                    }`}>
+                      {tool.pricing}
+                    </span>
+                    <span className="text-[10px] text-gray-700 font-bold tracking-tighter uppercase">Rating: {tool.rating}</span>
+                  </div>
+                </div>
+                
+                <h4 className="text-white text-xl font-black mb-1 tracking-tight group-hover:text-[#ff2d55] transition-colors">
+                  {tool.name}
+                </h4>
+                <div className="mono-font text-[9px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">
+                  {tool.category}
+                </div>
+                <p className="text-gray-600 text-xs font-light leading-relaxed">
+                  {tool.desc}
+                </p>
+                
+                <div className="mt-8 flex items-center text-[#ff2d55] font-black mono-font text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0">
+                  <span>Analyze Hub</span>
+                  <svg className="w-3 h-3 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
       </div>
     </div>
   );
